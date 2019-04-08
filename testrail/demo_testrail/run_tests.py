@@ -11,6 +11,7 @@ import datetime
 from testrail_introd import *
 from multiprocessing import Process
 from xmlrunner import XMLTestRunner
+
 from time import time
 
 
@@ -62,8 +63,11 @@ def run_test_process(test_dir, f_pattern, output_dir):
     # test dir is expected as a relative path
     test_dir_name = test_dir.split('/')[len(test_dir.split('/')) - 1]
     sys.stdout = sys.stderr = open('{0}/{1}/{2}.log'.format(output_dir, results_dir, test_dir_name), 'w', buffering=0)
-    # tests = test_dir.split('./tests/')[0]
+    print('**' * 10)
     print(test_dir)
+    print(f_pattern)
+    print(output_dir)
+    print('**' * 10)
     discover_and_run_tests(test_dir, f_pattern, output_dir)
 
 
@@ -79,6 +83,7 @@ def discover_and_run_tests(test_dir, f_pattern, out_dir):
 
 
 def go_run(file_pattern, output_dir, test_cases):
+    make_results_dir(output_dir)
     procs = []
     subdirs = os.listdir('./tests/')
     for subdir in subdirs:
@@ -108,8 +113,6 @@ def upload_results(tst_plan_name, output_dir):
     # Get Testcase ID and populate dict
     tcTitles = testlogsFinder.tcTitle_result_comment.keys()
     info_tstcases = tst.get_testcases_by_title(titles=tcTitles)
-
-    print(info_tstcases[0])  # tstcase fields
     for tcTitle in tcTitles:
         for info_tstcase in info_tstcases:
             if tcTitle == info_tstcase['title']:
@@ -131,38 +134,49 @@ def upload_results(tst_plan_name, output_dir):
         tst.add_result_for_case(tc_id, result, comment)
     return failed_tests
 
+def get_test_cases_from_testrail(section):
+    tst = Testrail()
+    section_dict ={"system": 1, "demo_testrail": 2}
+    info_tstcases = tst.get_testcases_by_title()
+    return [x for x in info_tstcases if x['section_id'] == section_dict[section] and not x['refs']]
+
+
 
 def main(argv):
-    opts, args = getopt.getopt(argv, "o:", ["output="])
-    test_cases = ['cirese', 'kiwi', 'mango', 'pere', 'pepene']
-    output_dir = '/home/mihailiu/practice/all/testrail/demo_testrail'
-    file_pattern = '*test.py'
+    test_cases = ['cirese', 'kiwi', 'mango', 'pere', 'pepene', 'mere']
+    get_from_testrail = False
+    rerun_failed = False
 
-    if len(args) == 2:
-        file_pattern = str(args[1])
+    opts, args = getopt.getopt(argv, "t:r", ["testrail=",
+                                             "rerun="])
+    for opt, arg in opts:
+        if opt in ('-t', '--testrail'):
+            print('here')
+            get_from_testrail = True
+        elif opt in ('-r', '--rerun'):
+            print('there')
+            rerun_failed = True
 
-    make_results_dir(output_dir)
-    tst = Testrail()
-    info_tstcases = tst.get_testcases_by_title()
-    import pdb
-    pdb.set_trace()
-    print(info_tstcases[0])
+    output_dir = '/home/chelu/all/testrail/demo_testrail'
+    file_pattern = '*test.py'    
 
-    # # Start
-    # go_run(file_pattern, output_dir, test_cases=test_cases)
-    # log_dir = output_dir + results_dir
+    if get_from_testrail:
+        info_tstcases = get_test_cases_from_testrail('demo_testrail')
 
-    # # Test Plan Name
-    # time_stamp = datetime.datetime.fromtimestamp(time()).strftime('%Y_%m_%d_%H_%M_%S')
-    # tst_plan_name = "TestRun_{0}".format(time_stamp)
-    # failed_tc = upload_results(tst_plan_name, log_dir)
+    # Start
+    go_run(file_pattern, output_dir, test_cases=test_cases)
+    log_dir = output_dir + results_dir
 
-    # rerun_failed = True
-    # if rerun_failed:
-    #     tst_plan_name = "Retry_" + tst_plan_name
-    #     make_results_dir(output_dir)
-    #     go_run(file_pattern, output_dir, test_cases=failed_tc)
-    #     upload_results(tst_plan_name, log_dir)
+    # Test Plan Name
+    time_stamp = datetime.datetime.fromtimestamp(time()).strftime('%Y_%m_%d_%H_%M_%S')
+    tst_plan_name = "TestRun_{0}".format(time_stamp)
+    failed_tc = upload_results(tst_plan_name, log_dir)
+
+
+    if rerun_failed:
+        tst_plan_name = "Retry_" + tst_plan_name
+        go_run(file_pattern, output_dir, test_cases=failed_tc)
+        upload_results(tst_plan_name, log_dir)
 
 if __name__ == '__main__':
     main(sys.argv[1:])

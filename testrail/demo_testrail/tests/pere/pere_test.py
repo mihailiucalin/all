@@ -1,5 +1,6 @@
 import unittest
 import logging
+import random
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -17,7 +18,9 @@ class Pere_class_test(unittest.TestCase):
         log.info("Bye pere!")
 
     def test_pere_test(self):
-        self.assertTrue(False)
+
+        test_nr = random.randint(1,101)
+        self.assertTrue(test_nr % 2 == 0, "Number was: {0}".format(test_nr))
 
 
 if __name__ == '__main__':

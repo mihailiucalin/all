@@ -1,0 +1,25 @@
+********************
+./tests/mango
+*test.py
+/home/chelu/all/testrail/demo_testrail
+********************
+
+Running tests...
+----------------------------------------------------------------------
+INFO:tests.mango.mango_test:setUpClass mango
+FINFO:tests.mango.mango_test:testDown mango
+
+======================================================================
+ERROR [0.000s]: test_mango_test (tests.mango.mango_test.Mango_class_test)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/chelu/all/testrail/demo_testrail/tests/mango/mango_test.py", line 22, in test_mango_test
+    self.assertTrue(test_nr % 2 == 0, "Number was: {0}".format(test_nr))
+AssertionError: Number was: 97
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (errors=1)
+
+Generating XML reports...

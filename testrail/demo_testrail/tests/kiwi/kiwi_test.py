@@ -1,5 +1,6 @@
 import unittest
 import logging
+import random
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -18,7 +19,8 @@ class Kiwi_class_test(unittest.TestCase):
 
     def test_kiwi_test(self):
 
-        self.assertTrue(True)
+        test_nr = random.randint(1,101)
+        self.assertTrue(test_nr % 2 == 0, "Number was: {0}".format(test_nr))
 
 
 if __name__ == '__main__':

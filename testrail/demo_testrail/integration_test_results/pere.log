@@ -1,0 +1,25 @@
+********************
+./tests/pere
+*test.py
+/home/chelu/all/testrail/demo_testrail
+********************
+
+Running tests...
+----------------------------------------------------------------------
+INFO:tests.pere.pere_test:Hello: pere!
+FINFO:tests.pere.pere_test:Bye pere!
+
+======================================================================
+ERROR [0.000s]: test_pere_test (tests.pere.pere_test.Pere_class_test)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/chelu/all/testrail/demo_testrail/tests/pere/pere_test.py", line 23, in test_pere_test
+    self.assertTrue(test_nr % 2 == 0, "Number was: {0}".format(test_nr))
+AssertionError: Number was: 19
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (errors=1)
+
+Generating XML reports...

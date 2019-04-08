@@ -1,0 +1,17 @@
+********************
+./tests/pepene
+*test.py
+/home/chelu/all/testrail/demo_testrail
+********************
+
+Running tests...
+----------------------------------------------------------------------
+INFO:tests.pepene.pepene_test:setUpClass pepene
+.INFO:tests.pepene.pepene_test:testDown pepene
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
+
+Generating XML reports...
